@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src= "https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js"></script> 
+    <link rel="stylesheet" type="text/css" href="style.css"> 
+    <script src="jquery-3.4.1.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+</head>
+<body>
+
+
+
+{% block content %}
+
+<div class="col-sm-10 col-md-10 col-lg-10">
+    <div class='container'>
+        <div class="row">
+          <div class="col-sm-12 col-md-12">
+            <canvas id="gasChart"  ></canvas>
+          </div>
+
+          
+          
+        </div>
+
+        <hr>
+                  
+        <div class="row phContainer">
+          <div class="col-md-6 gauge">
+              <canvas id="gasGauge" width="400" height="250"></canvas>
+          </div>
+          
+                <div class="col-md-6 description">
+                    
+                      <table class="table table-hover table-striped">
+                        <tr class="thead-dark text-center">
+                          <th>CO Concentration in Air</th>
+                          <th>Subsequent Effects</th>
+                        </tr>
+                        <tr>
+                          <td>9 ppm</td>
+                          <td>ASHRAE maximum allowable concentration for short exposure in a living area</td>
+                        </tr>
+                        <tr>
+                          <td>50 ppm</td>
+                          <td>Maximum allowable concentration for continuos exposure in any 8-hour period</td>
+                        </tr>
+                        <tr>
+                          <td>200 ppm</td>
+                          <td>Headache,tiredness,dizziness and nausea after 2-3 hours</td>
+                        </tr>
+                        <tr>
+                          <td>400 ppm</td>
+                          <td>Frontal headache within 1 to 2 hours and life threatening after 3 hours. Maximum allowable amount (air-free) in flue gases.</td>
+                        </tr>
+                        <tr>
+                          <td>800 ppm</td>
+                          <td>Dizziness,nausea and convulsions within 45 minutes. Unconsciousness within 2 hours. Death within 2-3 hours.</td>
+                        </tr>
+                        <tr>
+                          <td>1600 ppm</td>
+                          <td>Headache,dizziness and nausea within 20 minutes. Death within 30 minutes.</td>
+                        </tr>
+                      </table>
+                    
+                </div>
+          </div>
+
+      </div>              
+</div>
+
+
+
+</div>
+
+
+
+
+
+
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+-->
+
+<script>
+$(document).ready(function(){
+reloadPage();
+
+}
+
+)
+
+// function addData(chart, label, data) {
+//     chart.data.labels.push(label);
+//     chart.data.datasets.forEach((dataset) => {
+//         dataset.data.push(data);
+//     });
+//     chart.update({preservation:true});
+// }
+function addData(chart, label, data) {
+chart.data.labels.push(label);
+chart.data.datasets.forEach((dataset) => {
+dataset.data.push(data);
+dataset.label=["CO level:- "+data];
+});
+
+chart.update();
+}
+function addDataGauge(chart, data) {
+if(data>800){
+chart.data.datasets.forEach((dataset)=>{
+  dataset.backgroundColor=['rgba(255,0,0,0.3)','#e3e3e3'];
+  dataset.borderColor=['rgba(255, 0, 0, 1)','#e3e3e3'];
+});
+}else{
+chart.data.datasets.forEach((dataset)=>{
+  dataset.backgroundColor=[
+      
+  
+      'rgba(0, 255, 0, 0.2)',
+      '#e3e3e3',
+  ];
+  dataset.borderColor=['rgba(0, 255, 0, 1)','#e3e3e3'];
+} );
+}
+
+chart.data.labels=["Gas level:- "+data];
+chart.data.datasets.forEach((dataset) => {
+
+dataset.data.shift();
+dataset.data.shift();
+dataset.data.unshift(1050-data);
+dataset.data.unshift(data);
+});
+
+
+chart.update();
+}
+function removeData(chart) {
+chart.data.labels.shift();
+chart.data.datasets.forEach((dataset) => {
+dataset.data.shift();
+});
+
+chart.update();
+}
+var ctx1 = document.getElementById('gasChart');
+var gasChart= new Chart(ctx1, {
+  type: 'line',
+  data: {
+      labels:[],
+        datasets: [{
+          pointRadius:6,
+          pointBackgroundColor:'rgba(0, 0, 0, 0.7)',
+          label:["CO level"] ,
+          data:[],
+          backgroundColor: [
+              
+              'rgba(0, 0, 255, 0)',
+      
+          ],
+          borderColor: [
+
+              'rgba(0, 0, 255, 1)',
+
+          ],
+          borderWidth: 1
+      }]
+  },
+  options: {
+    layout: {
+        padding: {
+                left: 20,
+                right: 20,
+                top: 10,
+                bottom: 50
+            }
+        },
+      scales: {
+          yAxes: [{
+              ticks: {
+                  beginAtZero: true
+              }
+          }]
+          ,xAxes:[{
+              gridLines:{
+                  display:false
+              }
+          }]
+      }
+  }
+});
+
+var ctx1 = document.getElementById('gasGauge').getContext('2d');
+var total=1050;
+var gasGauge = new Chart(ctx1, {
+type: 'doughnut',
+data: {
+labels: [],
+datasets: [{
+  label: [],
+  data: [0,total],
+  backgroundColor: [
+      
+  
+      'rgba(0, 10, 255, 0)',
+      '#e3e3e3',
+  ],
+  borderColor: [
+      
+     
+      'rgba(153, 102, 255, 0)',
+      '#e3e3e3',
+      
+  ],
+  borderWidth: 1,
+  
+}]
+},
+options: {
+animation: {
+duration: 0
+},
+rotation:1* Math.PI,
+circumference:1* Math.PI,
+cutoutPercentage:75,
+
+
+}
+});
+
+
+var count=0;
+
+function reloadPage(){
+setTimeout(function(){
+count=count+1
+
+
+$.ajax({
+method:"GET",
+url:"/fashion/coronaupdates",
+success:function(data){
+addData(gasChart,data.label,data.data);
+addDataGauge(gasGauge,data.data);
+if(count>8){
+  removeData(gasChart);
+}   
+},
+error:function(error_data){
+console.log("error")
+console.log(error_data)
+}
+
+
+});
+
+// $.ajax({
+// method:"GET",
+// url:"http://127.0.0.1:8000/dashboard/",
+// success:function(){},
+// error:function(error_data){
+//     console.log("error")
+//     console.log(error_data)
+// }
+
+
+// });
+
+
+reloadPage();
+
+},2000);
+}
+
+
+
+
+</script>
+
+
+
+
+
+{% endblock %}
+
+
+</body>
+</html>

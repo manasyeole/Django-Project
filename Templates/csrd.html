@@ -1,0 +1,119 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>CSRD</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.6.2/css/bulma.css" />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+
+
+<style >
+  
+  .abc{
+     background:lightblue; 
+     text-decoration-color: blue;
+  }
+  .modal-body{
+     background:url({% static 'img/ab.gif' %}) center; 
+  }
+</style>
+</head>
+<body>
+   
+    <section class="abc">
+        <div class="hero-body">
+            <div class="container">
+                <center>
+                  <button type="submit" class="btn btn-primary lg">Create_Search_Retreve_Delete
+                  </button>
+                </center>
+                </div>
+        </div>
+    </section>
+<br>
+<section>
+<center>
+  <a class="btn btn-danger btn-lg" href="{% url 'accounts:create_new' %}" role="button">CREATE</a>
+</center>
+</section>
+
+ <section class="section">
+        <div class="container">
+            <div class="columns">
+                
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div >
+                                 <div class="form-group">
+                                 <input type="text" class="form-control" placeholder="Search" name="search">
+                                 <button type="submit" class="btn btn-primary">SEARCH</button>
+                                 </div>
+                                 
+                        </div>
+                    </form>
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div >
+                                <div class="form-group">
+                                 <input type="text" class="form-control" placeholder="Edit" name="edit">
+                                 <button type="submit"  class="btn btn-primary">EDIT</button>
+                                 </div>
+                                
+                        </div>
+                    </form>
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div >
+                                 <div class="form-group">
+                                 <input type="text" class="form-control" placeholder="Delete" name="delete">
+                                 <button type="submit" class="btn btn-primary" onclick="return confirm('Are you sure to delete?')">DELETE</button>
+                                 </div>
+                        </div>
+                    </form>
+              
+            </div>
+        </div>
+    </section>
+     
+     <div class="container">
+  <button type="button" class="btn btn-info btn-lg" data-toggle="modal" data-target="#myModal">{% for obj in object_list %}
+       {{ obj.username }}<br/>
+     {%  endfor %}</button>
+
+  <!-- Modal -->
+  <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+    
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4 class="modal-title"><center>Information</center></h4>
+        </div>
+        <div class="modal-body" >
+          <p style="background-color: blue">  <center>
+     {% for obj in object_list %}
+        Username: {{ obj.username }}<br/>
+        Firstname:{{ obj.first_name }}<br/>
+        Lastname: {{ obj.last_name }}<br/>
+        Password: {{ obj.password }}<br/>
+     {%  endfor %}
+    </center> </p>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+        </div>
+      </div></div>
+  </div>
+  </div>
+
+{% for objd in object_listofdelete %}
+        Username: {{ objd.username }}<br/>
+     {%  endfor %}
+</body>
+</html>
